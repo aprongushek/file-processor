@@ -15,8 +15,8 @@ const bool INPUT_DELETE = true;
 const bool INPUT_KEEP = false;
 const bool OUTPUT_OVERRIDE = true;
 const bool OUTPUT_COPY = false;
-const bool START_ONCE = true;
-const bool START_TIMER = false;
+const bool START_ONCE = false;
+const bool START_TIMER = true;
 
 struct FileProcessorOptions {
     bool input;
@@ -35,7 +35,7 @@ public:
 private slots:
 
     void on_startButton_pressed();
-    void updateProgress(int progressPercent, unsigned long int msecToNextStart);
+    void updateProgress(int progressPercent, qint64 msecToNextStart);
     void clearProcessor();
     void on_inputBrowseButton_pressed();
     void on_outputBrowseButton_pressed();

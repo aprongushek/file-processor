@@ -24,10 +24,10 @@ void MainWindow::on_startButton_pressed()
     if (!fileProcessor) {
         ui->startButton->setEnabled(false);
         QThread *thread = new QThread;
-        if (ui->startTimeEdit->time() == QTime(0, 0, 0))
-            fileProcessor = new FileProcessor(false, QTime(0, 0, 0));
-        else
-            fileProcessor = new FileProcessor(true, ui->startTimeEdit->time());
+        fileProcessor = new FileProcessor(options.input, options.output, options.start,
+                                          ui->startTimeEdit->time(), ui->inputDirLineEdit->text(),
+                                          ui->inputMaskLineEdit->text(), ui->outputDirLineEdit->text(),
+                                          ui->xorKeyLineEdit->text().toInt());
         fileProcessor->moveToThread(thread);
 
         connect(thread, &QThread::started, fileProcessor, &FileProcessor::manage);
@@ -42,14 +42,14 @@ void MainWindow::on_startButton_pressed()
     }
 }
 
-void MainWindow::updateProgress(int progressPercent, unsigned long int msecToNextStart)
+void MainWindow::updateProgress(int progressPercent, qint64 msecToNextStart)
 {
     ui->progressBar->setValue(progressPercent);
-    unsigned long int hour = msecToNextStart / 1000 / 60 / 60;
+    qint64 hour = msecToNextStart / 1000 / 60 / 60;
     msecToNextStart -= hour * 60 * 60 * 1000;
-    unsigned long int minute = msecToNextStart / 1000 / 60;
+    qint64 minute = msecToNextStart / 1000 / 60;
     msecToNextStart -= minute * 60 * 1000;
-    unsigned long int second = msecToNextStart / 1000;
+    qint64 second = msecToNextStart / 1000;
     QTime time(hour, minute, second);
     ui->timerLabel->setText("Next start in: " + time.toString("hh:mm:ss"));
 }
@@ -94,19 +94,19 @@ void MainWindow::on_inputKeepRadio_pressed()
 
 void MainWindow::on_outputOverrideRadio_pressed()
 {
-    options.input = OUTPUT_OVERRIDE;
+    options.output = OUTPUT_OVERRIDE;
 }
 
 
 void MainWindow::on_outputCopyRadio_pressed()
 {
-    options.input = OUTPUT_COPY;
+    options.output = OUTPUT_COPY;
 }
 
 
 void MainWindow::on_startOnceRadio_pressed()
 {
-    options.input = START_ONCE;
+    options.start = START_ONCE;
     ui->startTimeEdit->setEnabled(false);
     ui->startTimeEdit->setTime(QTime(0, 0, 0));
     if (!fileProcessor)
@@ -116,7 +116,7 @@ void MainWindow::on_startOnceRadio_pressed()
 
 void MainWindow::on_startTimerRadio_pressed()
 {
-    options.input = START_TIMER;
+    options.start = START_TIMER;
     ui->startTimeEdit->setEnabled(true);
     if (!fileProcessor)
         ui->timerLabel->setText("Timer will be set on start");
