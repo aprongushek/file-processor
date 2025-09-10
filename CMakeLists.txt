@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.19)
 project(file_processor LANGUAGES CXX)
 
 find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets)
+find_package(Qt6 REQUIRED COMPONENTS Core)
+find_package(Qt6 REQUIRED COMPONENTS Core)
+find_package(Qt6 REQUIRED COMPONENTS Core)
 
 qt_standard_project_setup()
 
@@ -11,6 +14,9 @@ qt_add_executable(file_processor
     mainwindow.cpp
     mainwindow.h
     mainwindow.ui
+    fileprocessor.h fileprocessor.cpp
+
+
 )
 
 target_link_libraries(file_processor
@@ -18,6 +24,9 @@ target_link_libraries(file_processor
         Qt::Core
         Qt::Widgets
 )
+target_link_libraries(file_processor PRIVATE Qt6::Core)
+target_link_libraries(file_processor PRIVATE Qt6::Core)
+target_link_libraries(file_processor PRIVATE Qt6::Core)
 
 include(GNUInstallDirs)
 
